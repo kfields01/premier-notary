@@ -70,3 +70,14 @@ jobs:
       - name: Test
         if: steps.has_pkg.outputs.exists == 'true'
         run: npm test --if-present
+
+      - name: Commit and push changes
+        if: steps.has_pkg.outputs.exists == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git commit -m "chore: prep for Vercel deployment" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
