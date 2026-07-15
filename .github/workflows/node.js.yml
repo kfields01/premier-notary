@@ -52,6 +52,17 @@ jobs:
         if: steps.has_pkg.outputs.exists == 'true'
         run: npm ci
 
+      - name: Remove lovable-tagger dependency
+        if: steps.has_pkg.outputs.exists == 'true'
+        run: |
+          node -e "
+          const fs = require('fs');
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          delete pkg.devDependencies['lovable-tagger'];
+          fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          console.log('Done');
+          "
+
       - name: Build
         if: steps.has_pkg.outputs.exists == 'true'
         run: npm run build --if-present
